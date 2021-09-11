@@ -30,6 +30,7 @@ IPV4_BRIDGE="192.168.1.3/24"
 # ipv6 addresses
 IPV6_HOST1="fd00::1/64"
 IPV6_HOST2="fd00::2/64"
+IPV6_BRIDGE="fd00::3/64"
 
 # create network namespaces
 function create_namespaces {
@@ -108,6 +109,7 @@ function add_ips {
 
 	echo "Adding ip address to bridge..."
 	$IP address add $IPV4_BRIDGE dev $BRIDGE_DEV
+	$IP address add $IPV6_BRIDGE dev $BRIDGE_DEV
 }
 
 # set everything up
