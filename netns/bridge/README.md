@@ -69,3 +69,15 @@ Tearing down:
 ```console
 $ sudo ./bridge.sh teardown
 ```
+
+Pinging second from first host with default configuration and IPv4:
+
+```console
+$ sudo ip netns exec bridge-host1 ping 192.168.1.2
+```
+
+Pinging second from first host with default configuration and IPv6:
+
+```console
+$ sudo ip netns exec bridge-host1 ping fd00::2
+```
