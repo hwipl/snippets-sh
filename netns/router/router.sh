@@ -27,6 +27,12 @@ IPV4_HOST2="192.168.2.2/24"
 IPV4_ROUTER1="192.168.1.1/24"
 IPV4_ROUTER2="192.168.2.1/24"
 
+# ipv6 addresses
+IPV6_HOST1="fd00:1::2/64"
+IPV6_HOST2="fd00:2::2/64"
+IPV6_ROUTER1="fd00:1::1/64"
+IPV6_ROUTER2="fd00:2::1/64"
+
 # create network namespaces
 function create_namespaces {
 	echo "Creating network namespaces..."
@@ -88,20 +94,35 @@ function add_ips {
 		dev $VETH_HOST11
 	$IP netns exec $NS_ROUTER $IP address add $IPV4_ROUTER2 \
 		dev $VETH_HOST21
+
+	# add ipv6 addresses to veth interfaces
+	$IP netns exec $NS_HOST1 $IP address add $IPV6_HOST1 dev $VETH_HOST12
+	$IP netns exec $NS_HOST2 $IP address add $IPV6_HOST2 dev $VETH_HOST22
+	$IP netns exec $NS_ROUTER $IP address add $IPV6_ROUTER1 \
+		dev $VETH_HOST11
+	$IP netns exec $NS_ROUTER $IP address add $IPV6_ROUTER2 \
+		dev $VETH_HOST21
 }
 
 # add routing that connects veth interfaces
 function add_routing {
 	echo "Adding routing..."
 
-	# enable routing on router
+	# enable ipv4 and ipv6 routing on router
 	$IP netns exec $NS_ROUTER $SYSCTL -q -w net.ipv4.conf.all.forwarding=1
+	$IP netns exec $NS_ROUTER $SYSCTL -q -w net.ipv6.conf.all.forwarding=1
 
-	# set default routes on hosts
+	# set default ipv4 routes on hosts
 	$IP netns exec $NS_HOST1 $IP route add default via ${IPV4_ROUTER1%/*} \
 		dev $VETH_HOST12
 	$IP netns exec $NS_HOST2 $IP route add default via ${IPV4_ROUTER2%/*} \
 		dev $VETH_HOST22
+
+	# set default ipv6 routes on hosts
+	$IP netns exec $NS_HOST1 $IP -6 route add default \
+		via ${IPV6_ROUTER1%/*} dev $VETH_HOST12
+	$IP netns exec $NS_HOST2 $IP -6 route add default \
+		via ${IPV6_ROUTER2%/*} dev $VETH_HOST22
 }
 
 # set everything up
