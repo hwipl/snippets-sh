@@ -15,10 +15,10 @@ VETH_BRIDGE1="br0-host1"
 VETH_BRIDGE2="br0-host2"
 
 # mac addresses
-MAC_HOST11="0a:bc:de:f0:00:11"
-MAC_HOST12="0a:bc:de:f0:00:12"
-MAC_HOST21="0a:bc:de:f0:00:21"
-MAC_HOST22="0a:bc:de:f0:00:22"
+MAC_HOST1="0a:bc:de:f0:00:12"
+MAC_HOST2="0a:bc:de:f0:00:22"
+MAC_BRIDGE1="0a:bc:de:f0:00:11"
+MAC_BRIDGE2="0a:bc:de:f0:00:21"
 
 # bridge interface
 BRIDGE_DEV="br0"
@@ -71,11 +71,11 @@ function add_veths {
 
 	# set mac addresses of veth interfaces
 	$IP netns exec $NS_BRIDGE $IP link set $VETH_BRIDGE1 \
-		address $MAC_HOST11
+		address $MAC_BRIDGE1
 	$IP netns exec $NS_BRIDGE $IP link set $VETH_BRIDGE2 \
-		address $MAC_HOST21
-	$IP netns exec $NS_HOST1 $IP link set $VETH_HOST1 address $MAC_HOST12
-	$IP netns exec $NS_HOST2 $IP link set $VETH_HOST2 address $MAC_HOST22
+		address $MAC_BRIDGE2
+	$IP netns exec $NS_HOST1 $IP link set $VETH_HOST1 address $MAC_HOST1
+	$IP netns exec $NS_HOST2 $IP link set $VETH_HOST2 address $MAC_HOST2
 
 	# set veth interfaces up
 	$IP netns exec $NS_BRIDGE $IP link set $VETH_BRIDGE1 up
