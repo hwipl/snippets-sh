@@ -1,20 +1,22 @@
 # bridge
 
-This script sets up two network namespaces connected by a bridge and configures
-MAC, IPv4 and IPv6 addresses on the virtual ethernet interfaces and the bridge:
+This script sets up two network namespaces connected by a bridge in a third
+network namespace and configures MAC, IPv4 and IPv6 addresses on the virtual
+ethernet interfaces and the bridge:
 
 ```
-+----------+               +----------+
-| ns-host1 |               | ns-host2 |
-|          |               |          |
-+-[veth12]-+               +-[veth22]-+
-     |                          |
-     |________          ________|
-              |        |
-        +--[veth11]-[veth21]--+
-        |        bridge       |
-        +---------------------+
-
++--------------+                  +--------------+
+|   ns-host1   |                  |   ns-host2   |
+|              |                  |              |
++-[veth-host1]-+                  +-[veth-host2]-+
+       |                                 |
+       |________                 ________|
+                |               |
+        +-[veth-bridge1]-[veth-bridge2]-+
+        |          [bridge-dev]         |
+        |                               |
+        |           ns-bridge           |
+        +-------------------------------+
 ```
 
 ## Usage
@@ -29,21 +31,22 @@ Configuration of `bridge.sh` is at the top of the script:
 # name of network namespaces
 NS_HOST1="bridge-host1"
 NS_HOST2="bridge-host2"
+NS_BRIDGE="bridge-bridge1"
 
 # veth interfaces
-VETH_HOST11="veth1"
-VETH_HOST12="veth2"
-VETH_HOST21="veth3"
-VETH_HOST22="veth4"
+VETH_HOST1="eth0"
+VETH_HOST2="eth0"
+VETH_BRIDGE1="br0-host1"
+VETH_BRIDGE2="br0-host2"
 
 # mac addresses
-MAC_HOST11="0a:bc:de:f0:00:11"
-MAC_HOST12="0a:bc:de:f0:00:12"
-MAC_HOST21="0a:bc:de:f0:00:21"
-MAC_HOST22="0a:bc:de:f0:00:22"
+MAC_HOST1="0a:bc:de:f0:00:01"
+MAC_HOST2="0a:bc:de:f0:00:02"
+MAC_BRIDGE1="0a:bc:de:f0:00:b1"
+MAC_BRIDGE2="0a:bc:de:f0:00:b2"
 
 # bridge interface
-BRIDGE_DEV="netnsbr0"
+BRIDGE_DEV="br0"
 
 # ipv4 addresses
 IPV4_HOST1="192.168.1.1/24"
