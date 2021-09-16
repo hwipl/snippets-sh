@@ -54,14 +54,14 @@ function add_veths {
 	echo "Adding veth interfaces..."
 
 	# add veth interfaces
-	$IP link add $VETH_HOST11 type veth peer name $VETH_HOST12
-	$IP link add $VETH_HOST21 type veth peer name $VETH_HOST22
+	$IP netns exec $NS_BRIDGE $IP link add $VETH_HOST11 type veth \
+		peer name $VETH_HOST12
+	$IP netns exec $NS_BRIDGE $IP link add $VETH_HOST21 type veth \
+		peer name $VETH_HOST22
 
 	# move second veth interfaces to other namespaces
-	$IP link set $VETH_HOST11 netns $NS_BRIDGE
-	$IP link set $VETH_HOST12 netns $NS_HOST1
-	$IP link set $VETH_HOST21 netns $NS_BRIDGE
-	$IP link set $VETH_HOST22 netns $NS_HOST2
+	$IP netns exec $NS_BRIDGE $IP link set $VETH_HOST12 netns $NS_HOST1
+	$IP netns exec $NS_BRIDGE $IP link set $VETH_HOST22 netns $NS_HOST2
 
 	# set mac addresses of veth interfaces
 	$IP netns exec $NS_BRIDGE $IP link set $VETH_HOST11 address $MAC_HOST11
