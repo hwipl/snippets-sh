@@ -9,10 +9,10 @@ NS_HOST2="bridge-host2"
 NS_BRIDGE="bridge-bridge1"
 
 # veth interfaces
-VETH_HOST11="br0-host1"
-VETH_HOST12="eth0"
-VETH_HOST21="br0-host2"
-VETH_HOST22="eth0"
+VETH_HOST1="eth0"
+VETH_HOST2="eth0"
+VETH_BRIDGE1="br0-host1"
+VETH_BRIDGE2="br0-host2"
 
 # mac addresses
 MAC_HOST11="0a:bc:de:f0:00:11"
@@ -56,9 +56,9 @@ function add_veths {
 	# add veth interfaces
 	local VETH_TEMP1="temp-host1"
 	local VETH_TEMP2="temp-host2"
-	$IP netns exec $NS_BRIDGE $IP link add $VETH_HOST11 type veth \
+	$IP netns exec $NS_BRIDGE $IP link add $VETH_BRIDGE1 type veth \
 		peer name $VETH_TEMP1
-	$IP netns exec $NS_BRIDGE $IP link add $VETH_HOST21 type veth \
+	$IP netns exec $NS_BRIDGE $IP link add $VETH_BRIDGE2 type veth \
 		peer name $VETH_TEMP2
 
 	# move second veth interfaces to other namespaces
@@ -66,39 +66,41 @@ function add_veths {
 	$IP netns exec $NS_BRIDGE $IP link set $VETH_TEMP2 netns $NS_HOST2
 
 	# rename veth interfaces in other namespaces
-	$IP netns exec $NS_HOST1 $IP link set $VETH_TEMP1 name $VETH_HOST12
-	$IP netns exec $NS_HOST2 $IP link set $VETH_TEMP2 name $VETH_HOST22
+	$IP netns exec $NS_HOST1 $IP link set $VETH_TEMP1 name $VETH_HOST1
+	$IP netns exec $NS_HOST2 $IP link set $VETH_TEMP2 name $VETH_HOST2
 
 	# set mac addresses of veth interfaces
-	$IP netns exec $NS_BRIDGE $IP link set $VETH_HOST11 address $MAC_HOST11
-	$IP netns exec $NS_BRIDGE $IP link set $VETH_HOST21 address $MAC_HOST21
-	$IP netns exec $NS_HOST1 $IP link set $VETH_HOST12 address $MAC_HOST12
-	$IP netns exec $NS_HOST2 $IP link set $VETH_HOST22 address $MAC_HOST22
+	$IP netns exec $NS_BRIDGE $IP link set $VETH_BRIDGE1 \
+		address $MAC_HOST11
+	$IP netns exec $NS_BRIDGE $IP link set $VETH_BRIDGE2 \
+		address $MAC_HOST21
+	$IP netns exec $NS_HOST1 $IP link set $VETH_HOST1 address $MAC_HOST12
+	$IP netns exec $NS_HOST2 $IP link set $VETH_HOST2 address $MAC_HOST22
 
 	# set veth interfaces up
-	$IP netns exec $NS_BRIDGE $IP link set $VETH_HOST11 up
-	$IP netns exec $NS_BRIDGE $IP link set $VETH_HOST21 up
-	$IP netns exec $NS_HOST1 $IP link set $VETH_HOST12 up
-	$IP netns exec $NS_HOST2 $IP link set $VETH_HOST22 up
+	$IP netns exec $NS_BRIDGE $IP link set $VETH_BRIDGE1 up
+	$IP netns exec $NS_BRIDGE $IP link set $VETH_BRIDGE2 up
+	$IP netns exec $NS_HOST1 $IP link set $VETH_HOST1 up
+	$IP netns exec $NS_HOST2 $IP link set $VETH_HOST2 up
 }
 
 # delete veth interfaces from network namespaces
 function delete_veths {
 	echo "Removing veth interfaces..."
-	$IP netns exec $NS_BRIDGE $IP link delete $VETH_HOST11 type veth
-	$IP netns exec $NS_BRIDGE $IP link delete $VETH_HOST21 type veth
+	$IP netns exec $NS_BRIDGE $IP link delete $VETH_BRIDGE1 type veth
+	$IP netns exec $NS_BRIDGE $IP link delete $VETH_BRIDGE2 type veth
 }
 
 # add bridge that connects veth interfaces
 function add_bridge {
 	echo "Adding bridge..."
 	$IP netns exec $NS_BRIDGE $IP link add $BRIDGE_DEV type bridge
-	$IP netns exec $NS_BRIDGE $IP link set dev $VETH_HOST11 \
+	$IP netns exec $NS_BRIDGE $IP link set dev $VETH_BRIDGE1 \
 		master $BRIDGE_DEV
-	$IP netns exec $NS_BRIDGE $IP link set dev $VETH_HOST21 \
+	$IP netns exec $NS_BRIDGE $IP link set dev $VETH_BRIDGE2 \
 		master $BRIDGE_DEV
-	$IP netns exec $NS_BRIDGE $IP link set dev $VETH_HOST11 promisc on
-	$IP netns exec $NS_BRIDGE $IP link set dev $VETH_HOST21 promisc on
+	$IP netns exec $NS_BRIDGE $IP link set dev $VETH_BRIDGE1 promisc on
+	$IP netns exec $NS_BRIDGE $IP link set dev $VETH_BRIDGE2 promisc on
 	$IP netns exec $NS_BRIDGE $IP link set dev $BRIDGE_DEV up
 }
 
@@ -113,12 +115,12 @@ function add_ips {
 	echo "Adding ip addresses to veth interfaces..."
 
 	# add ipv4 addresses to veth interfaces
-	$IP netns exec $NS_HOST1 $IP address add $IPV4_HOST1 dev $VETH_HOST12
-	$IP netns exec $NS_HOST2 $IP address add $IPV4_HOST2 dev $VETH_HOST22
+	$IP netns exec $NS_HOST1 $IP address add $IPV4_HOST1 dev $VETH_HOST1
+	$IP netns exec $NS_HOST2 $IP address add $IPV4_HOST2 dev $VETH_HOST2
 
 	# add ipv6 addresses to veth interfaces
-	$IP netns exec $NS_HOST1 $IP address add $IPV6_HOST1 dev $VETH_HOST12
-	$IP netns exec $NS_HOST2 $IP address add $IPV6_HOST2 dev $VETH_HOST22
+	$IP netns exec $NS_HOST1 $IP address add $IPV6_HOST1 dev $VETH_HOST1
+	$IP netns exec $NS_HOST2 $IP address add $IPV6_HOST2 dev $VETH_HOST2
 
 	echo "Adding ip address to bridge..."
 	$IP netns exec $NS_BRIDGE $IP address add $IPV4_BRIDGE dev $BRIDGE_DEV
