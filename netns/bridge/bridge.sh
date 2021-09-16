@@ -15,10 +15,10 @@ VETH_BRIDGE1="br0-host1"
 VETH_BRIDGE2="br0-host2"
 
 # mac addresses
-MAC_HOST1="0a:bc:de:f0:00:12"
-MAC_HOST2="0a:bc:de:f0:00:22"
-MAC_BRIDGE1="0a:bc:de:f0:00:11"
-MAC_BRIDGE2="0a:bc:de:f0:00:21"
+MAC_HOST1="0a:bc:de:f0:00:01"
+MAC_HOST2="0a:bc:de:f0:00:02"
+MAC_BRIDGE1="0a:bc:de:f0:00:b1"
+MAC_BRIDGE2="0a:bc:de:f0:00:b2"
 
 # bridge interface
 BRIDGE_DEV="br0"
