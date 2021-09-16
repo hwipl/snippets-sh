@@ -9,10 +9,10 @@ NS_HOST2="bridge-host2"
 NS_BRIDGE="bridge-bridge1"
 
 # veth interfaces
-VETH_HOST11="veth1"
-VETH_HOST12="veth2"
-VETH_HOST21="veth3"
-VETH_HOST22="veth4"
+VETH_HOST11="br0-host1"
+VETH_HOST12="eth0"
+VETH_HOST21="br0-host2"
+VETH_HOST22="eth0"
 
 # mac addresses
 MAC_HOST11="0a:bc:de:f0:00:11"
@@ -21,7 +21,7 @@ MAC_HOST21="0a:bc:de:f0:00:21"
 MAC_HOST22="0a:bc:de:f0:00:22"
 
 # bridge interface
-BRIDGE_DEV="netnsbr0"
+BRIDGE_DEV="br0"
 
 # ipv4 addresses
 IPV4_HOST1="192.168.1.1/24"
@@ -54,14 +54,20 @@ function add_veths {
 	echo "Adding veth interfaces..."
 
 	# add veth interfaces
+	local VETH_TEMP1="temp-host1"
+	local VETH_TEMP2="temp-host2"
 	$IP netns exec $NS_BRIDGE $IP link add $VETH_HOST11 type veth \
-		peer name $VETH_HOST12
+		peer name $VETH_TEMP1
 	$IP netns exec $NS_BRIDGE $IP link add $VETH_HOST21 type veth \
-		peer name $VETH_HOST22
+		peer name $VETH_TEMP2
 
 	# move second veth interfaces to other namespaces
-	$IP netns exec $NS_BRIDGE $IP link set $VETH_HOST12 netns $NS_HOST1
-	$IP netns exec $NS_BRIDGE $IP link set $VETH_HOST22 netns $NS_HOST2
+	$IP netns exec $NS_BRIDGE $IP link set $VETH_TEMP1 netns $NS_HOST1
+	$IP netns exec $NS_BRIDGE $IP link set $VETH_TEMP2 netns $NS_HOST2
+
+	# rename veth interfaces in other namespaces
+	$IP netns exec $NS_HOST1 $IP link set $VETH_TEMP1 name $VETH_HOST12
+	$IP netns exec $NS_HOST2 $IP link set $VETH_TEMP2 name $VETH_HOST22
 
 	# set mac addresses of veth interfaces
 	$IP netns exec $NS_BRIDGE $IP link set $VETH_HOST11 address $MAC_HOST11
