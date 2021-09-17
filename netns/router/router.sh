@@ -16,10 +16,10 @@ VETH_ROUTER1="router-host1"
 VETH_ROUTER2="router-host2"
 
 # mac addresses
-MAC_HOST11="0a:bc:de:f0:00:11"
-MAC_HOST12="0a:bc:de:f0:00:12"
-MAC_HOST21="0a:bc:de:f0:00:21"
-MAC_HOST22="0a:bc:de:f0:00:22"
+MAC_HOST1="0a:bc:de:f0:00:12"
+MAC_HOST2="0a:bc:de:f0:00:22"
+MAC_ROUTER1="0a:bc:de:f0:00:11"
+MAC_ROUTER2="0a:bc:de:f0:00:21"
 
 # ipv4 addresses
 IPV4_HOST1="192.168.1.2/24"
@@ -71,11 +71,11 @@ function add_veths {
 
 	# set mac addresses of veth interfaces
 	$IP netns exec $NS_ROUTER $IP link set $VETH_ROUTER1 \
-		address $MAC_HOST11
+		address $MAC_ROUTER1
 	$IP netns exec $NS_ROUTER $IP link set $VETH_ROUTER2 \
-		address $MAC_HOST21
-	$IP netns exec $NS_HOST1 $IP link set $VETH_HOST1 address $MAC_HOST12
-	$IP netns exec $NS_HOST2 $IP link set $VETH_HOST2 address $MAC_HOST22
+		address $MAC_ROUTER2
+	$IP netns exec $NS_HOST1 $IP link set $VETH_HOST1 address $MAC_HOST1
+	$IP netns exec $NS_HOST2 $IP link set $VETH_HOST2 address $MAC_HOST2
 
 	# set veth interfaces up
 	$IP netns exec $NS_ROUTER $IP link set $VETH_ROUTER1 up
