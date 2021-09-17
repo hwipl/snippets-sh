@@ -33,16 +33,16 @@ NS_HOST2="router-host2"
 NS_ROUTER="router-router1"
 
 # veth interfaces
-VETH_HOST11="veth1"
-VETH_HOST12="veth2"
-VETH_HOST21="veth3"
-VETH_HOST22="veth4"
+VETH_HOST1="eth0"
+VETH_HOST2="eth0"
+VETH_ROUTER1="router-host1"
+VETH_ROUTER2="router-host2"
 
 # mac addresses
-MAC_HOST11="0a:bc:de:f0:00:11"
-MAC_HOST12="0a:bc:de:f0:00:12"
-MAC_HOST21="0a:bc:de:f0:00:21"
-MAC_HOST22="0a:bc:de:f0:00:22"
+MAC_HOST1="0a:bc:de:f0:00:01"
+MAC_HOST2="0a:bc:de:f0:00:02"
+MAC_ROUTER1="0a:bc:de:f0:00:f1"
+MAC_ROUTER2="0a:bc:de:f0:00:f2"
 
 # ipv4 addresses
 IPV4_HOST1="192.168.1.2/24"
