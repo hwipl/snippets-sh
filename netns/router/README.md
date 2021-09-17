@@ -5,17 +5,18 @@ network namespace and configures MAC, IPv4 and IPv6 addresses on all virtual
 ethernet interfaces:
 
 ```
-+----------+               +----------+
-| ns-host1 |               | ns-host2 |
-|          |               |          |
-+-[veth12]-+               +-[veth22]-+
-     |                          |
-     |________          ________|
-              |        |
-        +--[veth11]-[veth21]--+
-        |        router       |
-        +---------------------+
-
++--------------+                  +--------------+
+|   ns-host1   |                  |   ns-host2   |
+|              |                  |              |
++-[veth-host1]-+                  +-[veth-host2]-+
+       |                                 |
+       |________                 ________|
+                |               |
+        +-[veth-router1]-[veth-router2]-+
+        |       |_______________|       |
+        |                               |
+        |           ns-router           |
+        +-------------------------------+
 ```
 
 ## Usage
