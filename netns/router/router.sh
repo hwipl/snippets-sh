@@ -54,20 +54,20 @@ function add_veths {
 	echo "Adding veth interfaces..."
 
 	# add veth interfaces
-	$IP link add $VETH_HOST11 type veth peer name $VETH_HOST12
-	$IP link add $VETH_HOST21 type veth peer name $VETH_HOST22
+	$IP netns exec $NS_ROUTER $IP link add $VETH_HOST11 type veth \
+		peer name $VETH_HOST12
+	$IP netns exec $NS_ROUTER $IP link add $VETH_HOST21 type veth \
+		peer name $VETH_HOST22
 
 	# set mac addresses of veth interfaces
-	$IP link set $VETH_HOST11 address $MAC_HOST11
-	$IP link set $VETH_HOST12 address $MAC_HOST12
-	$IP link set $VETH_HOST21 address $MAC_HOST21
-	$IP link set $VETH_HOST22 address $MAC_HOST22
+	$IP netns exec $NS_ROUTER $IP link set $VETH_HOST11 address $MAC_HOST11
+	$IP netns exec $NS_ROUTER $IP link set $VETH_HOST12 address $MAC_HOST12
+	$IP netns exec $NS_ROUTER $IP link set $VETH_HOST21 address $MAC_HOST21
+	$IP netns exec $NS_ROUTER $IP link set $VETH_HOST22 address $MAC_HOST22
 
-	# move veth interfaces to namespaces
-	$IP link set $VETH_HOST11 netns $NS_ROUTER
-	$IP link set $VETH_HOST12 netns $NS_HOST1
-	$IP link set $VETH_HOST21 netns $NS_ROUTER
-	$IP link set $VETH_HOST22 netns $NS_HOST2
+	# move second veth interfaces to other namespaces
+	$IP netns exec $NS_ROUTER $IP link set $VETH_HOST12 netns $NS_HOST1
+	$IP netns exec $NS_ROUTER $IP link set $VETH_HOST22 netns $NS_HOST2
 
 	# set veth interfaces up
 	$IP netns exec $NS_ROUTER $IP link set $VETH_HOST11 up
