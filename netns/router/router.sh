@@ -16,10 +16,10 @@ VETH_ROUTER1="router-host1"
 VETH_ROUTER2="router-host2"
 
 # mac addresses
-MAC_HOST1="0a:bc:de:f0:00:12"
-MAC_HOST2="0a:bc:de:f0:00:22"
-MAC_ROUTER1="0a:bc:de:f0:00:11"
-MAC_ROUTER2="0a:bc:de:f0:00:21"
+MAC_HOST1="0a:bc:de:f0:00:01"
+MAC_HOST2="0a:bc:de:f0:00:02"
+MAC_ROUTER1="0a:bc:de:f0:00:f1"
+MAC_ROUTER2="0a:bc:de:f0:00:f2"
 
 # ipv4 addresses
 IPV4_HOST1="192.168.1.2/24"
