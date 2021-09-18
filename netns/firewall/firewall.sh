@@ -33,6 +33,17 @@ IPV6_HOST2="fd00:2::2/64"
 IPV6_FIREWALL1="fd00:1::1/64"
 IPV6_FIREWALL2="fd00:2::1/64"
 
+# firewall rules
+declare -a FIREWALL_RULES=(
+"iptables -P INPUT DROP"
+"iptables -P OUTPUT DROP"
+"iptables -P FORWARD DROP"
+"iptables -A FORWARD -i $VETH_FIREWALL1 -o $VETH_FIREWALL2 -s $IPV4_HOST1 \
+	-d $IPV4_HOST2 -p icmp -j ACCEPT"
+"iptables -A FORWARD -i $VETH_FIREWALL2 -o $VETH_FIREWALL1 -s $IPV4_HOST2 \
+	-d $IPV4_HOST1 -p icmp -j ACCEPT"
+)
+
 # create network namespaces
 function create_namespaces {
 	echo "Creating network namespaces..."
@@ -135,12 +146,21 @@ function add_routing {
 		via ${IPV6_FIREWALL2%/*} dev $VETH_HOST2
 }
 
+# add packet filter rules to the firewall namespace
+function add_filtering {
+	for i in "${FIREWALL_RULES[@]}"
+	do
+		eval $IP netns exec $NS_FIREWALL "$i"
+	done
+}
+
 # set everything up
 function setup {
 	create_namespaces
 	add_veths
 	add_ips
 	add_routing
+	add_filtering
 }
 
 # tear everything down
