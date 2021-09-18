@@ -42,6 +42,16 @@ declare -a FIREWALL_RULES=(
 	-s $IPV4_HOST1 -d $IPV4_HOST2 -p icmp -j ACCEPT"
 "iptables -A FORWARD -i $VETH_FIREWALL2 -o $VETH_FIREWALL1 \
 	-s $IPV4_HOST2 -d $IPV4_HOST1 -p icmp -j ACCEPT"
+
+"ip6tables -P INPUT DROP"
+"ip6tables -A INPUT -p icmpv6 -j ACCEPT"
+"ip6tables -P OUTPUT DROP"
+"ip6tables -A OUTPUT -p icmpv6 -j ACCEPT"
+"ip6tables -P FORWARD DROP"
+"ip6tables -A FORWARD -i $VETH_FIREWALL1 -o $VETH_FIREWALL2 \
+	-s $IPV6_HOST1 -d $IPV6_HOST2 -p icmpv6 -j ACCEPT"
+"ip6tables -A FORWARD -i $VETH_FIREWALL2 -o $VETH_FIREWALL1 \
+	-s $IPV6_HOST2 -d $IPV6_HOST1 -p icmpv6 -j ACCEPT"
 )
 
 # create network namespaces
