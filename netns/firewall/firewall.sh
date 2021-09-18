@@ -38,10 +38,10 @@ declare -a FIREWALL_RULES=(
 "iptables -P INPUT DROP"
 "iptables -P OUTPUT DROP"
 "iptables -P FORWARD DROP"
-"iptables -A FORWARD -i $VETH_FIREWALL1 -o $VETH_FIREWALL2 -s $IPV4_HOST1 \
-	-d $IPV4_HOST2 -p icmp -j ACCEPT"
-"iptables -A FORWARD -i $VETH_FIREWALL2 -o $VETH_FIREWALL1 -s $IPV4_HOST2 \
-	-d $IPV4_HOST1 -p icmp -j ACCEPT"
+"iptables -A FORWARD -i $VETH_FIREWALL1 -o $VETH_FIREWALL2 \
+	-s $IPV4_HOST1 -d $IPV4_HOST2 -p icmp -j ACCEPT"
+"iptables -A FORWARD -i $VETH_FIREWALL2 -o $VETH_FIREWALL1 \
+	-s $IPV4_HOST2 -d $IPV4_HOST1 -p icmp -j ACCEPT"
 )
 
 # create network namespaces
