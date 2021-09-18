@@ -148,6 +148,9 @@ function add_routing {
 
 # add packet filter rules to the firewall namespace
 function add_filtering {
+	echo "Adding packet filtering..."
+
+	# add all filter rules from firewall rules array
 	for i in "${FIREWALL_RULES[@]}"
 	do
 		eval $IP netns exec $NS_FIREWALL "$i"
